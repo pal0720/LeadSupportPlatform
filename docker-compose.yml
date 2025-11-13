@@ -1,0 +1,151 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg15
+    container_name: gtm_postgres
+    environment:
+      POSTGRES_USER: gtm_user
+      POSTGRES_PASSWORD: gtm_password
+      POSTGRES_DB: gtm_platform
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gtm_user"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: gtm_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./apps/backend
+      dockerfile: Dockerfile
+    container_name: gtm_backend
+    environment:
+      DATABASE_URL: postgresql://gtm_user:gtm_password@postgres:5432/gtm_platform
+      REDIS_URL: redis://redis:6379/0
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      JWT_SECRET: ${JWT_SECRET:-dev-secret-key-change-in-production}
+      ENVIRONMENT: development
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./apps/backend:/app
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+  ai_service:
+    build:
+      context: ./apps/ai_service
+      dockerfile: Dockerfile
+    container_name: gtm_ai_service
+    environment:
+      DATABASE_URL: postgresql://gtm_user:gtm_password@postgres:5432/gtm_platform
+      REDIS_URL: redis://redis:6379/1
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      ENVIRONMENT: development
+    ports:
+      - "8001:8001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./apps/ai_service:/app
+    command: uvicorn main:app --host 0.0.0.0 --port 8001 --reload
+
+  celery_worker:
+    build:
+      context: ./apps/backend
+      dockerfile: Dockerfile
+    container_name: gtm_celery_worker
+    environment:
+      DATABASE_URL: postgresql://gtm_user:gtm_password@postgres:5432/gtm_platform
+      REDIS_URL: redis://redis:6379/0
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      ENVIRONMENT: development
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./apps/backend:/app
+    command: celery -A core.celery_app worker --loglevel=info
+
+  celery_beat:
+    build:
+      context: ./apps/backend
+      dockerfile: Dockerfile
+    container_name: gtm_celery_beat
+    environment:
+      DATABASE_URL: postgresql://gtm_user:gtm_password@postgres:5432/gtm_platform
+      REDIS_URL: redis://redis:6379/0
+      ENVIRONMENT: development
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./apps/backend:/app
+    command: celery -A core.celery_app beat --loglevel=info
+
+  frontend:
+    build:
+      context: ./apps/frontend
+      dockerfile: Dockerfile
+    container_name: gtm_frontend
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+      NEXT_PUBLIC_AI_SERVICE_URL: http://localhost:8001
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    volumes:
+      - ./apps/frontend:/app
+      - /app/node_modules
+      - /app/.next
+    command: npm run dev
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: gtm_mailhog
+    ports:
+      - "1025:1025"  # SMTP
+      - "8025:8025"  # Web UI
+    logging:
+      driver: none
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  default:
+    name: gtm_network
