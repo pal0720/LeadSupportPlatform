@@ -65,7 +65,7 @@ class Article(Base):
     needs_review = Column(Boolean, default=False)
 
     # Metadata
-    metadata = Column(JSONB, default={})
+    article_metadata = Column(JSONB, default={})
 
     # Timestamps
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)

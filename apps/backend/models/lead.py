@@ -119,7 +119,7 @@ class Lead(Base):
 
     # Custom fields
     custom_fields = Column(JSONB, default={})
-    metadata = Column(JSONB, default={})
+    lead_metadata = Column(JSONB, default={})
 
     # Tags
     tags = Column(ARRAY(String), default=[])

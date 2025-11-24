@@ -16,6 +16,7 @@ import {
   AlertCircle,
   Sparkles,
 } from "lucide-react";
+import { formatDate } from "@/lib/utils/date";
 
 type Tab = "general" | "brand" | "members" | "billing";
 
@@ -427,7 +428,7 @@ function MembersTab() {
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                  {new Date(member.joinedAt).toLocaleDateString()}
+                  {formatDate(member.joinedAt)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   {member.role !== "owner" && (
@@ -539,7 +540,7 @@ function BillingTab() {
                 <h4 className="text-2xl font-bold">{currentPlan.name}</h4>
               </div>
               <p className="mt-2 text-blue-100">
-                ${currentPlan.price}/month • Next billing: {new Date(currentPlan.nextBillingDate).toLocaleDateString()}
+                ${currentPlan.price}/month • Next billing: {formatDate(currentPlan.nextBillingDate)}
               </p>
             </div>
             <button className="px-4 py-2 bg-white text-blue-600 rounded-lg font-medium hover:bg-blue-50 transition-colors">
@@ -671,7 +672,7 @@ function BillingTab() {
               ].map((invoice, i) => (
                 <tr key={i}>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                    {new Date(invoice.date).toLocaleDateString()}
+                    {formatDate(invoice.date)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                     {invoice.description}

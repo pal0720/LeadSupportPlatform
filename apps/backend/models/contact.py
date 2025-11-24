@@ -1,6 +1,6 @@
 """Contact model for converted leads and customers."""
 from datetime import datetime
-from sqlalchemy import Column, String, Boolean, DateTime, Text, ForeignKey
+from sqlalchemy import Column, String, Boolean, DateTime, Text, Integer, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID, JSONB, ARRAY
 import uuid
 
@@ -67,7 +67,7 @@ class Contact(Base):
 
     # Custom fields
     custom_fields = Column(JSONB, default={})
-    metadata = Column(JSONB, default={})
+    contact_metadata = Column(JSONB, default={})
 
     # Tags
     tags = Column(ARRAY(String), default=[])

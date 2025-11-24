@@ -93,7 +93,7 @@ class AccountHealth(Base):
     alert_reasons = Column(JSONB, default=[])
 
     # Metadata
-    metadata = Column(JSONB, default={})
+    account_health_metadata = Column(JSONB, default={})
 
     # Timestamps
     calculated_at = Column(DateTime, default=datetime.utcnow, nullable=False)
@@ -144,7 +144,7 @@ class ExpansionSignal(Base):
     assigned_to = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=True, index=True)
 
     # Metadata
-    metadata = Column(JSONB, default={})
+    expansion_signal_metadata = Column(JSONB, default={})
 
     # Timestamps
     detected_at = Column(DateTime, default=datetime.utcnow, nullable=False)

@@ -16,6 +16,7 @@ import {
   Percent,
   ChevronDown,
 } from "lucide-react";
+import { formatDate } from "@/lib/utils/date";
 
 interface Deal {
   id: string;
@@ -325,7 +326,7 @@ function DealCard({ deal, onDragStart }: { deal: Deal; onDragStart: () => void }
 
           <div className="flex items-center text-xs text-gray-500 dark:text-gray-400">
             <Calendar className="h-3 w-3 mr-1" />
-            Close: {new Date(deal.expectedCloseDate).toLocaleDateString()}
+            Close: {formatDate(deal.expectedCloseDate)}
           </div>
 
           <div className="flex items-center text-xs text-gray-500 dark:text-gray-400 pt-2 border-t border-gray-200 dark:border-gray-700">

@@ -10,15 +10,12 @@ import secrets
 import re
 from cryptography.fernet import Fernet
 from jose import JWTError, jwt
-from passlib.context import CryptContext
+import bcrypt
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 import base64
 
 from core.config import settings
-
-# Password hashing context
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # Bearer token security
 security = HTTPBearer()
@@ -33,8 +30,17 @@ def hash_password(password: str) -> str:
 
     Returns:
         Hashed password
+
+    Note:
+        Bcrypt has a 72-byte limitation. Passwords are truncated to 72 bytes
+        before hashing to prevent errors.
     """
-    return pwd_context.hash(password)
+    # Bcrypt can only handle passwords up to 72 bytes
+    # Truncate to ensure compatibility
+    password_bytes = password.encode('utf-8')[:72]
+    salt = bcrypt.gensalt()
+    hashed = bcrypt.hashpw(password_bytes, salt)
+    return hashed.decode('utf-8')
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
@@ -47,8 +53,16 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
     Returns:
         True if password matches
+
+    Note:
+        Bcrypt has a 72-byte limitation. Passwords are truncated to 72 bytes
+        before verification to match the hashing behavior.
     """
-    return pwd_context.verify(plain_password, hashed_password)
+    # Bcrypt can only handle passwords up to 72 bytes
+    # Truncate to match the hash_password behavior
+    password_bytes = plain_password.encode('utf-8')[:72]
+    hashed_bytes = hashed_password.encode('utf-8')
+    return bcrypt.checkpw(password_bytes, hashed_bytes)
 
 
 def create_access_token(

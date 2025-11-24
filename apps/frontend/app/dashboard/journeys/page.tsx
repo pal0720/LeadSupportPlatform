@@ -23,6 +23,7 @@ import {
   BarChart3,
 } from "lucide-react";
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { formatDate } from "@/lib/utils/date";
 
 type JourneyStatus = "active" | "paused" | "draft" | "archived";
 
@@ -381,7 +382,7 @@ export default function JourneysPage() {
             {/* Footer */}
             <div className="px-6 py-3 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-700">
               <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-                <span>Updated {new Date(journey.updatedAt).toLocaleDateString()}</span>
+                <span>Updated {formatDate(journey.updatedAt)}</span>
                 <button className="text-blue-600 dark:text-blue-400 hover:underline flex items-center">
                   <BarChart3 className="h-3 w-3 mr-1" />
                   View Analytics

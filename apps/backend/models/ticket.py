@@ -108,7 +108,7 @@ class Ticket(Base):
 
     # Custom fields
     custom_fields = Column(JSONB, default={})
-    metadata = Column(JSONB, default={})
+    ticket_metadata = Column(JSONB, default={})
 
     # Tags
     tags = Column(ARRAY(String), default=[])
@@ -159,7 +159,7 @@ class TicketMessage(Base):
     is_internal = Column(Boolean, default=False)
 
     # Metadata
-    metadata = Column(JSONB, default={})
+    ticket_message_metadata = Column(JSONB, default={})
 
     # Timestamps
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)

@@ -66,7 +66,7 @@ class Company(Base):
 
     # Custom fields and metadata
     custom_fields = Column(JSONB, default={})
-    metadata = Column(JSONB, default={})
+    company_metadata = Column(JSONB, default={})
 
     # Tags
     tags = Column(ARRAY(String), default=[])

@@ -65,7 +65,7 @@ class Sequence(Base):
 
     # Settings
     settings = Column(JSONB, default={})
-    metadata = Column(JSONB, default={})
+    sequence_metadata = Column(JSONB, default={})
 
     # Timestamps
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
@@ -147,7 +147,7 @@ class SequenceEnrollment(Base):
     exit_reason = Column(String(255), nullable=True)
 
     # Metadata
-    metadata = Column(JSONB, default={})
+    sequence_enrollment_metadata = Column(JSONB, default={})
 
     # Timestamps
     enrolled_at = Column(DateTime, default=datetime.utcnow, nullable=False)

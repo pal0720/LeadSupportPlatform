@@ -1,6 +1,6 @@
 """Email models for tracking communications."""
 from datetime import datetime
-from sqlalchemy import Column, String, Boolean, DateTime, Text, ForeignKey, Enum as SQLEnum
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, Text, ForeignKey, Enum as SQLEnum
 from sqlalchemy.dialects.postgresql import UUID, JSONB, ARRAY
 import uuid
 import enum
@@ -98,7 +98,7 @@ class Email(Base):
     provider_message_id = Column(String(255), nullable=True, index=True)
 
     # Metadata
-    metadata = Column(JSONB, default={})
+    email_metadata = Column(JSONB, default={})
     headers = Column(JSONB, default={})
 
     # Timestamps
@@ -144,7 +144,7 @@ class EmailTemplate(Base):
     is_active = Column(Boolean, default=True)
 
     # Metadata
-    metadata = Column(JSONB, default={})
+    email_template_metadata = Column(JSONB, default={})
 
     # Timestamps
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)

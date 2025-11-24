@@ -45,7 +45,7 @@ class User(Base):
     preferences = Column(JSONB, default={})
 
     # Metadata
-    metadata = Column(JSONB, default={})
+    user_metadata = Column(JSONB, default={})
 
     # Timestamps
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)

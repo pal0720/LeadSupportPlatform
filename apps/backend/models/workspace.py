@@ -79,7 +79,7 @@ class Workspace(Base):
     features = Column(JSONB, default={})  # Feature flags per workspace
 
     # Metadata
-    metadata = Column(JSONB, default={})
+    workspace_metadata = Column(JSONB, default={})
 
     # Timestamps
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)

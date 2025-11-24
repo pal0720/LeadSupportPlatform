@@ -23,6 +23,7 @@ import {
   Sparkles,
   Activity,
 } from "lucide-react";
+import { formatDate } from "@/lib/utils/date";
 
 export default function DealDetailPage() {
   const params = useParams();
@@ -204,7 +205,7 @@ export default function DealDetailPage() {
               </div>
               <div className="flex items-center">
                 <Calendar className="h-4 w-4 mr-1" />
-                Created {new Date(deal.createdAt).toLocaleDateString()}
+                Created {formatDate(deal.createdAt)}
               </div>
             </div>
           </div>
@@ -256,7 +257,7 @@ export default function DealDetailPage() {
               <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Expected Close</span>
             </div>
             <p className="text-lg font-bold text-gray-900 dark:text-white">
-              {new Date(deal.expectedCloseDate).toLocaleDateString()}
+              {formatDate(deal.expectedCloseDate)}
             </p>
           </div>
         </div>
@@ -366,7 +367,7 @@ export default function DealDetailPage() {
                               <h5 className="text-sm font-medium text-gray-900 dark:text-white">{activity.title}</h5>
                               <div className="flex items-center mt-2 text-xs text-gray-600 dark:text-gray-400">
                                 <Calendar className="h-3 w-3 mr-1" />
-                                {new Date(activity.date).toLocaleDateString()} at {activity.time}
+                                {formatDate(activity.date)} at {activity.time}
                               </div>
                               <div className="flex items-center mt-1 text-xs text-gray-600 dark:text-gray-400">
                                 <User className="h-3 w-3 mr-1" />
@@ -390,7 +391,7 @@ export default function DealDetailPage() {
                             <div className="flex-1">
                               <h5 className="text-sm font-medium text-gray-900 dark:text-white">{activity.title}</h5>
                               <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                {new Date(activity.date).toLocaleDateString()} by {activity.completedBy}
+                                {formatDate(activity.date)} by {activity.completedBy}
                               </p>
                             </div>
                           </div>

@@ -56,7 +56,7 @@ class Event(Base):
     utm_term = Column(String(255), nullable=True)
 
     # Metadata
-    metadata = Column(JSONB, default={})
+    event_metadata = Column(JSONB, default={})
 
     # Timestamp
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False, index=True)

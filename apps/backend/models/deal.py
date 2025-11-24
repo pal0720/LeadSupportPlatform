@@ -84,7 +84,7 @@ class Deal(Base):
 
     # Custom fields
     custom_fields = Column(JSONB, default={})
-    metadata = Column(JSONB, default={})
+    deal_metadata = Column(JSONB, default={})
 
     # Tags
     tags = Column(ARRAY(String), default=[])
@@ -173,7 +173,7 @@ class Activity(Base):
     ai_agent_id = Column(String(100), nullable=True)
 
     # Metadata
-    metadata = Column(JSONB, default={})
+    activity_metadata = Column(JSONB, default={})
 
     # Timestamps
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
@@ -261,3 +261,15 @@ class Timeline(Base):
 
     def __repr__(self):
         return f"<Timeline {self.event_type}>"
+
+class ActivityType(str, enum.Enum):
+    CALL = "call"
+    EMAIL = "email"
+    MEETING = "meeting"
+    TASK = "task"
+    NOTE = "note"
+
+class ActivityStatus(str, enum.Enum):
+    PENDING = "pending"
+    COMPLETED = "completed"
+    CANCELLED = "cancelled"

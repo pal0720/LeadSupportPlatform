@@ -2,7 +2,7 @@
 Database configuration and session management.
 """
 from typing import AsyncGenerator
-from sqlalchemy import create_engine, event
+from sqlalchemy import create_engine, event, text
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 from sqlalchemy.orm import declarative_base, sessionmaker
 from sqlalchemy.pool import NullPool
@@ -79,7 +79,7 @@ async def init_db() -> None:
     # Create tables
     async with engine.begin() as conn:
         # Enable pgvector extension
-        await conn.execute("CREATE EXTENSION IF NOT EXISTS vector")
+        await conn.exec_driver_sql("CREATE EXTENSION IF NOT EXISTS vector")
 
         # Create tables
         await conn.run_sync(Base.metadata.create_all)
